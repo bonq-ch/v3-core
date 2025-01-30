@@ -1,55 +1,10 @@
-import 'hardhat-typechain'
-import '@nomiclabs/hardhat-ethers'
-import '@nomiclabs/hardhat-waffle'
-import '@nomiclabs/hardhat-etherscan'
+import { HardhatUserConfig } from 'hardhat/config'
+import '@nomicfoundation/hardhat-toolbox'
+import '@nomicfoundation/hardhat-verify'
+import * as dotenv from 'dotenv'
+dotenv.config()
 
-export default {
-  networks: {
-    hardhat: {
-      allowUnlimitedContractSize: false,
-    },
-    mainnet: {
-      url: `https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`,
-    },
-    ropsten: {
-      url: `https://ropsten.infura.io/v3/${process.env.INFURA_API_KEY}`,
-    },
-    rinkeby: {
-      url: `https://rinkeby.infura.io/v3/${process.env.INFURA_API_KEY}`,
-    },
-    goerli: {
-      url: `https://goerli.infura.io/v3/${process.env.INFURA_API_KEY}`,
-    },
-    kovan: {
-      url: `https://kovan.infura.io/v3/${process.env.INFURA_API_KEY}`,
-    },
-    arbitrumRinkeby: {
-      url: `https://arbitrum-rinkeby.infura.io/v3/${process.env.INFURA_API_KEY}`,
-    },
-    arbitrum: {
-      url: `https://arbitrum-mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`,
-    },
-    optimismKovan: {
-      url: `https://optimism-kovan.infura.io/v3/${process.env.INFURA_API_KEY}`,
-    },
-    optimism: {
-      url: `https://optimism-mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`,
-    },
-    mumbai: {
-      url: `https://polygon-mumbai.infura.io/v3/${process.env.INFURA_API_KEY}`,
-    },
-    polygon: {
-      url: `https://polygon-mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`,
-    },
-    bnb: {
-      url: `https://bsc-dataseed.binance.org/`,
-    },
-  },
-  etherscan: {
-    // Your API key for Etherscan
-    // Obtain one at https://etherscan.io/
-    apiKey: process.env.ETHERSCAN_API_KEY,
-  },
+const config: HardhatUserConfig = {
   solidity: {
     version: '0.7.6',
     settings: {
@@ -58,11 +13,32 @@ export default {
         runs: 800,
       },
       metadata: {
-        // do not include the metadata hash, since this is machine dependent
-        // and we want all generated code to be deterministic
-        // https://docs.soliditylang.org/en/v0.7.6/metadata.html
         bytecodeHash: 'none',
       },
     },
   },
+  // @ts-ignore
+  etherscan: {
+    apiKey: {
+      redbelly: 'redbelly', // apiKey is not required, just set a placeholder
+    },
+    customChains: [
+      {
+        network: 'redbelly',
+        chainId: 153,
+        urls: {
+          apiURL: 'https://api.routescan.io/v2/network/testnet/evm/153_2/etherscan',
+          browserURL: 'https://redbelly.testnet.routescan.io',
+        },
+      },
+    ],
+  },
+  networks: {
+    redbelly: {
+      url: 'https://governors.testnet.redbelly.network',
+      accounts: [process.env.PRIVATE_KEY as string],
+    },
+  },
 }
+
+export default config
